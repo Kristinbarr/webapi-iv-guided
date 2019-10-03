@@ -1,33 +1,15 @@
-const express = require('express');
-const helmet = require('helmet');
+const express = require('express')
+const helmet = require('helmet')
 
-const Shoutouts = require('../data/shoutouts-model.js');
+// const secrets = require('../config/secrets')
 
-const server = express();
+const apiRouter = require('./api-router.js')
 
-server.use(helmet());
-server.use(express.json());
+const server = express()
 
-server.get('/', (req, res) => {
-  Shoutouts.find()
-  .then(shouts => {
-    res.status(200).json({messageOfTheDay: process.env.MOTD, shouts});
-  })
-  .catch (error => {
-    console.error('\nERROR', error);
-    res.status(500).json({ error: 'Cannot retrieve the shoutouts' });
-  });
-});
+server.use(express.json())
+server.use(helmet())
 
-server.post('/', (req, res) => {
-  Shoutouts.add(req.body)
-  .then(shoutout => {
-    res.status(201).json(shoutout);
-  })
-  .catch (error => {
-    console.error('\nERROR', error);
-    res.status(500).json({ error: 'Cannot add the shoutout' });
-  });
-});
+server.use('/api', apiRouter)
 
-module.exports = server;
+module.exports = server
